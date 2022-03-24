@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger_output.json')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -20,9 +22,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/services', servicesRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -40,9 +46,10 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const port = process.env.PORT || 8000;
-var server = app.listen(app.get('port'), function() {
+const port = process.env.PORT || 8020;
+var server = app.listen(port, function() {
   console.log('Express server listening on port ' + server.address().port);
 });
+
 
 module.exports = app;
